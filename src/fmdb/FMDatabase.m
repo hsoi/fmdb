@@ -540,7 +540,7 @@ static int FMDBDatabaseBusyHandler(void *f, int count) {
             // Don't pass a NULL pointer, or sqlite will bind a SQL null instead of a blob.
             bytes = "";
         }
-        sqlite3_bind_blob(pStmt, idx, bytes, (int)[obj length], SQLITE_STATIC);
+        sqlite3_bind_blob(pStmt, idx, bytes, (int)[((NSData*)obj) length], SQLITE_STATIC);
     }
     else if ([obj isKindOfClass:[NSDate class]]) {
         if (self.hasDateFormatter)
@@ -899,7 +899,7 @@ static int FMDBDatabaseBusyHandler(void *f, int count) {
 
 #pragma mark Execute updates
 
-- (BOOL)executeUpdate:(NSString*)sql error:(NSError**)outErr withArgumentsInArray:(NSArray*)arrayArgs orDictionary:(NSDictionary *)dictionaryArgs orVAList:(va_list)args {
+- (BOOL)executeUpdate:(NSString*)sql error:(NSError* __autoreleasing *)outErr withArgumentsInArray:(NSArray*)arrayArgs orDictionary:(NSDictionary *)dictionaryArgs orVAList:(va_list)args {
     
     if (![self databaseExists]) {
         return NO;
@@ -1164,7 +1164,7 @@ int FMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values,
     return (rc == SQLITE_OK);
 }
 
-- (BOOL)executeUpdate:(NSString*)sql withErrorAndBindings:(NSError**)outErr, ... {
+- (BOOL)executeUpdate:(NSString*)sql withErrorAndBindings:(NSError* __autoreleasing *)outErr, ... {
     
     va_list args;
     va_start(args, outErr);
@@ -1178,7 +1178,7 @@ int FMDBExecuteBulkSQLCallback(void *theBlockAsVoid, int columns, char **values,
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (BOOL)update:(NSString*)sql withErrorAndBindings:(NSError**)outErr, ... {
+- (BOOL)update:(NSString*)sql withErrorAndBindings:(NSError* __autoreleasing *)outErr, ... {
     va_list args;
     va_start(args, outErr);
     
@@ -1242,7 +1242,7 @@ static NSString *FMDBEscapeSavePointName(NSString *savepointName) {
     return [savepointName stringByReplacingOccurrencesOfString:@"'" withString:@"''"];
 }
 
-- (BOOL)startSavePointWithName:(NSString*)name error:(NSError**)outErr {
+- (BOOL)startSavePointWithName:(NSString*)name error:(NSError* __autoreleasing *)outErr {
     
     NSParameterAssert(name);
     
@@ -1260,7 +1260,7 @@ static NSString *FMDBEscapeSavePointName(NSString *savepointName) {
     return YES;
 }
 
-- (BOOL)releaseSavePointWithName:(NSString*)name error:(NSError**)outErr {
+- (BOOL)releaseSavePointWithName:(NSString*)name error:(NSError* __autoreleasing *)outErr {
     
     NSParameterAssert(name);
     
@@ -1274,7 +1274,7 @@ static NSString *FMDBEscapeSavePointName(NSString *savepointName) {
     return worked;
 }
 
-- (BOOL)rollbackToSavePointWithName:(NSString*)name error:(NSError**)outErr {
+- (BOOL)rollbackToSavePointWithName:(NSString*)name error:(NSError* __autoreleasing *)outErr {
     
     NSParameterAssert(name);
     
